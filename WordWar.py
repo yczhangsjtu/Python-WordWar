@@ -1332,9 +1332,6 @@ def battleLeftClick(event):
 def drawmenu():
     if(currentCanvas != "menu"): return
     cv_menu.delete(ALL)
-    cv_menu.create_image(0,0,image=groundImage)
-    cv_menu.create_image(winw/2,0,image=groundImage)
-    cv_menu.create_image(0,winh/2,image=groundImage)
     cv_menu.create_image(winw/2,winh/2,image=groundImage)
     for b in menubuttons: 
         b.draw(cv_menu)
@@ -1379,9 +1376,6 @@ def drawmain():
     global citySelect,showControlPanel
     if(currentCanvas != "main"): return
     cv_main.delete(ALL)
-    cv_main.create_image(0,0,image=groundImage)
-    cv_main.create_image(winw/2,0,image=groundImage)
-    cv_main.create_image(0,winh/2,image=groundImage)
     cv_main.create_image(winw/2,winh/2,image=groundImage)
     for c in cities:
         c.draw(cv_main)
@@ -1500,9 +1494,6 @@ def drawmain():
 def drawdoc():
     if currentCanvas != "document": return
     cv_document.delete(ALL)
-    cv_document.create_image(0,0,image=groundImage)
-    cv_document.create_image(winw/2,0,image=groundImage)
-    cv_document.create_image(0,winh/2,image=groundImage)
     cv_document.create_image(winw/2,winh/2,image=groundImage)
     for b in documentbuttons:
         b.draw(cv_document)
@@ -1519,9 +1510,6 @@ def drawbattle():
     if currentCanvas != "battle": return
     cv_battle.delete(ALL)
 
-    cv_battle.create_image(0,0,image=groundImage)
-    cv_battle.create_image(winw/2,0,image=groundImage)
-    cv_battle.create_image(0,winh/2,image=groundImage)
     cv_battle.create_image(winw/2,winh/2,image=groundImage)
 
     for s in tmpDeadWords:
