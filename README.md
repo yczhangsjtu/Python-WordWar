@@ -71,11 +71,17 @@ Each line is in the form: cityNumber.attribute = value
 The statements of a city of the country denoted by red is like:
 
 city3.x = 123
+
 city3.y = 456
+
 city3.color = 0
+
 city3.addWord = hello
+
 city3.addWord = world
+
 city3.addWord = word
+
 city3.addWord = war
 
 "addWord" is used to add a word to the city.
