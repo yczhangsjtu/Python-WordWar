@@ -42,6 +42,7 @@ rpx = (winw-rpw)/2
 rpy = (winh-rph*2)/2
 # Distance threshold
 thresdst = 150 # Threshold distance for two cities being seen as neighbor
+convexMargin = thresdst/3 # Used when calculating convex of a country
 CURRENT_DIR = dirname(realpath(__file__))
 NEWGAME_FILE = join(CURRENT_DIR, "new.txt")
 DICT_FILE = join(CURRENT_DIR, "word.txt")
@@ -738,7 +739,7 @@ def putMark(tp,data):
         ag = math.acos(cs)
         if y1 > y0: ag = 2*math.pi-ag
         sz = int(math.sqrt((y1-y0)*(y1-y0)+(x1-x0)*(x1-x0)))-citySize
-        if sz < 0: sz = 15
+        if sz <= 0: sz = 15
         indx = 1
         if tp == "attack": indx = 0
         img = [ImageTk.PhotoImage(\
@@ -779,10 +780,10 @@ def citiesWithColor(c):
 
 def enmiesInConvexHull(cts):
     if len(cts) == 0: return []
-    left = min([c.shape.x for c in cts])
-    right = max([c.shape.x for c in cts])
-    bottom = min([c.shape.y for c in cts])
-    top = max([c.shape.y for c in cts])
+    left = min([c.shape.x for c in cts]) - convexMargin
+    right = max([c.shape.x for c in cts]) + convexMargin
+    bottom = min([c.shape.y for c in cts]) - convexMargin
+    top = max([c.shape.y for c in cts]) + convexMargin
     return [ct for ct in cities if ct.shape.x > left and ct.shape.x < right \
                                 and ct.shape.y > bottom and ct.shape.y < top and
                                 ct.c != cts[0].c]
