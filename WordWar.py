@@ -448,16 +448,16 @@ def saveCityInfo(infofile):
 
 def readDict():
     fdict = codecs.open(DICT_FILE,"r","utf-8")
+    p = True
     while True:
         s = fdict.readline()
         if(s == ""): break
-        s = s.replace("\r","")
-        s = s.replace("\n","")
+        s = s.encode('ascii','ignore')
+        s = s.strip()
         if(s.isalpha):
             m = fdict.readline()
             if(m == ""): break
-            m = m.replace("\r","")
-            m = m.replace("\n","")
+            m = m.strip()
             wordDict[s] = m
             wordList.append(s)
     fdict.close()
@@ -598,17 +598,11 @@ def ai(s,targets):
         x,y = s.pos[0], s.pos[1]
         ex,ey = e.pos[0], e.pos[1]
         dist = (ex-x)*(ex-x)+(ey-y)*(ey-y)
-        if mmindist is None:
-            mmindist = dist
-            ttarg = e
-        if mmindist > dist:
+        if mmindist is None or mmindist > dist:
             mmindist = dist
             ttarg = e
         if e.state == "walk":
-            if mindist is None:
-                mindist = dist
-                targ = e
-            if mindist > dist:
+            if mindist is None or mindist > dist:
                 mindist = dist
                 targ = e
             
@@ -818,35 +812,47 @@ def mainfunc():
                                [c.shape.x,c.shape.y])
                     continue
             # Move Troop
-            # Pick one of it's neighbors, if it's of the same color, move
-            # with a probability p, where p = n/(m+n), where m and n are
-            # number of enemy neighbors of the two cities respectively.
+            # Pick one of it's neighbors, if it's of the same color, let
+            # m and n be number of enemy neighbors of the two cities:
+            #   if both zero or both nonzero, equilize the two cities
+            #   if one is zero, another is nonzero, move all troops in the
+            #   zero city into nonzero city
             # If it's an enemy, launch a war with probability
             # p = m/30(m+n) where m is the number of soldiers(words) of
             # this city and n is that of enemies
             if len(c.words) > 1:
                 ns = neighbors(c)
                 # It has neighrbos
-                if(len(ns.Neighbors)>0):
+                if len(ns.Neighbors) > 0:
                     nb = ns.Neighbors[randint(0,len(ns.Neighbors)-1)]
                     if nb in ns.Alliance:
                         m = len(ns.Enemies)
                         n = len(neighbors(nb).Enemies)
-                        if m == 0 and n == 0:
-                            m = 1
-                            n = 1
-                        p = randint(1,m+n)
-                        # move with probability n/(m+n)
-                        if p <= n:
-                            # Move one word to the destination
-                            i = randint(0,len(c.words)-1)
-                            nb.words.append(c.words.pop(i))
-                            x0 = c.shape.x+citySize/2
-                            x1 = nb.shape.x+citySize/2
-                            y0 = c.shape.y+citySize/2
-                            y1 = nb.shape.y+citySize/2
+                        x0 = c.shape.x+citySize/2
+                        x1 = nb.shape.x+citySize/2
+                        y0 = c.shape.y+citySize/2
+                        y1 = nb.shape.y+citySize/2
+                        if m == 0 and n == 0 or m != 0 and n != 0:
+                            if len(nb.words) - len(c.words) > 1:
+                                putMark("arrow",[x1,y1,x0,y0])
+                            elif len(c.words) - len(nb.words) > 1:
+                                putMark("arrow",[x0,y0,x1,y1])
+                            while len(nb.words) - len(c.words) > 1:
+                                i = randint(0,len(nb.words)-1)
+                                c.words.append(nb.words.pop(i))
+                            while len(c.words) - len(nb.words) > 1:
+                                i = randint(0,len(c.words)-1)
+                                nb.words.append(c.words.pop(i))
+                        elif m == 0:
                             putMark("arrow",[x0,y0,x1,y1])
-                            continue
+                            while len(c.words) > 1:
+                                i = randint(0,len(c.words)-1)
+                                nb.words.append(c.words.pop(i))
+                        elif n == 0:
+                            putMark("arrow",[x1,y1,x0,y0])
+                            while len(nb.words) > 1:
+                                i = randint(0,len(nb.words)-1)
+                                c.words.append(nb.words.pop(i))
                     elif nb in ns.Enemies:
                         m = len(c.words)
                         n = len(nb.words)
@@ -877,14 +883,16 @@ def mainfunc():
                             # If the target city has no defence, just take
                             # it no matter whether it's yours or computer's
                             if not nb.c == yourColor or n == 0:
-                                p = randint(1,m+n)
-                                if p <= m: # Attacker win
+                                while len(attackers) > 0 and len(defenders) > 0:
+                                    p = randint(1,2)
+                                    if p <= 1:
+                                        deadWords.append(attackers.pop().word)
+                                    else:
+                                        deadWords.append(defenders.pop().word)
+                                if len(defenders) == 0: # Attacker win
                                     nb.c = c.c
                                     nb.shape.color = colors[nb.c]
                                     nb.words = [s.word for s in attackers]
-                                    deadWords.extend([s.word for s in defenders])
-                                else: # Defender win
-                                    deadWords.extend([s.word for s in attackers])
 
                                 nb.buff = []
                                 c.buff = []
