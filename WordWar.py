@@ -27,22 +27,22 @@ menuButtonLabels = ["START","LOAD","QUIT"]
 mainMenuButtonLabels = ["SAVE","LOAD","QUIT"]
 controlButtonLabels = ["SET OUT","RECRUIT","SELECT ALL","UNSELECT ALL","CANCEL"]
 nbuts = len(menuButtonLabels)
-bh = winh / 10 #height of each button
-bw = winw / 4
-x0 = (winw - bw)/2
-y0 = (winh - bh * nbuts)/2
+bh = int(winh / 10) #height of each button
+bw = int(winw / 4)
+x0 = int((winw - bw)/2)
+y0 = int((winh - bh * nbuts)/2)
 citySize = 55
 # Word Block size
-wbh = winh / 35
-wbw = winw / 8
+wbh = int(winh / 35)
+wbw = int(winw / 8)
 # Recruit Panel size
-rpw = winw / 2
-rph = winh / 30
-rpx = (winw-rpw)/2
-rpy = (winh-rph*2)/2
+rpw = int(winw / 2)
+rph = int(winh / 30)
+rpx = int((winw-rpw)/2)
+rpy = int((winh-rph*2)/2)
 # Distance threshold
 thresdst = 150 # Threshold distance for two cities being seen as neighbor
-convexMargin = thresdst/3 # Used when calculating convex of a country
+convexMargin = int(thresdst/3) # Used when calculating convex of a country
 CURRENT_DIR = dirname(realpath(__file__))
 NEWGAME_FILE = join(CURRENT_DIR, "new.txt")
 DICT_FILE = join(CURRENT_DIR, "word.txt")
@@ -247,7 +247,7 @@ class fightPair():
         w,h = answerbw, answerbh 
         canvas.create_rectangle(x,y,x+w,y+h,outline="Black",fill="Yellow",\
                                 tag='fight')
-        canvas.create_text(x,y,anchor=NW,text=self.question,font=("Symbol",int(h/2)),\
+        canvas.create_text(x+5,y+5,anchor=NW,text=self.question,font=("Symbol",int(h/2)),\
                            tag='fight')
         for b in self.buttons: b.draw(canvas)
 
@@ -1124,15 +1124,15 @@ def selectLeftClick(event):
                         attackers=[soldier(w,srccity.c,0) for w in srccity.buff]
                         defenders=[soldier(w,dstcity.c,1) for w in dstcity.words]
                         if useflag:
-                            flag = [winw/2,winh/2]
+                            flag = [int(winw/2),int(winh/2)]
                         for s in attackers:
                             # Attackers originally distribute in the below
                             # half of the battle field
                             s.setpos(randint(0,winw),\
-                                     randint(winh*3/4,winh))
+                                     randint(int(winh*3/4),winh))
                         for s in defenders:
                             s.setpos(randint(0,winw),\
-                                     randint(0,winh/4))
+                                     randint(0,int(winh/4)))
                         newscene = "battle"
                         yourTroop = attackers
                         enemyTroop = defenders
@@ -1352,20 +1352,20 @@ def drawselect(redrawAll):
     if(redrawAll):
         cv_selectCity.delete(ALL)
         cv_selectCity.create_image(0,0,image=groundImage)
-        cv_selectCity.create_image(winw/2,0,image=groundImage)
-        cv_selectCity.create_image(0,winh/2,image=groundImage)
-        cv_selectCity.create_image(winw/2,winh/2,image=groundImage)
+        cv_selectCity.create_image(int(winw/2),0,image=groundImage)
+        cv_selectCity.create_image(0,int(winh/2),image=groundImage)
+        cv_selectCity.create_image(int(winw/2),int(winh/2),image=groundImage)
         for c in cities:
             c.draw(cv_selectCity)
-        cv_selectCity.create_text(0,0,anchor=NW,text="Select a city.",\
+        cv_selectCity.create_text(5,5,anchor=NW,text="Select a city.",\
                                   fill="White",font="Symbol 15")
     else:
         cv_selectCity.delete('select')
     if(citySelect != None):
         x,y,w = citySelect.shape.x, citySelect.shape.y, citySize
-        W = w * 6/5
-        x -= (W-w)/2
-        y -= (W-w)/2
+        W = int(w * 6/5)
+        x -= int((W-w)/2)
+        y -= int((W-w)/2)
         cv_selectCity.create_rectangle(x,y,x+W,y+W,outline='black',fill="",\
                                        tag="select")
     # If it is in selectTargetCity mode, highlight the neighbors of the source
@@ -1375,9 +1375,9 @@ def drawselect(redrawAll):
         for c in cities:
             if areNeighbors(c,srccity) and c is not srccity:
                 x,y,w = c.shape.x, c.shape.y, citySize
-                W = w * 6/5
-                x -= (W-w)/2
-                y -= (W-w)/2
+                W = int(w * 6/5)
+                x -= int((W-w)/2)
+                y -= int((W-w)/3)
                 cv_selectCity.create_rectangle(x,y,x+W,y+W,outline='red',width=3,\
                                                tag='target')
 
@@ -1392,9 +1392,9 @@ def drawmain():
         x = citySelect.shape.x
         y = citySelect.shape.y
         w = citySize
-        W = w * 6/5
-        x -= (W-w)/2
-        y -= (W-w)/2
+        W = int(w * 6/5)
+        x -= int((W-w)/2)
+        y -= int((W-w)/2)
         cv_main.create_rectangle(x,y,x+W,y+W,outline='black',fill="",\
                                  tag="select")
     
