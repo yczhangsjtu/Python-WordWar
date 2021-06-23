@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 from collections import namedtuple
 from os.path import dirname, splitext, realpath, isfile, join, basename
 from os import listdir
@@ -83,8 +83,8 @@ class mybutton():
                                 tag=self.tag)
         # Draw text, with font size being half of the smaller of the width and 
         # height
-        canvas.create_text(self.x+self.w/2,self.y+self.h/2,text=self.text,\
-                           anchor=CENTER,font=(self.font,min(self.w,self.h)/2),\
+        canvas.create_text(self.x+int(self.w/2),self.y+int(self.h/2),text=self.text,\
+                           anchor=CENTER,font=(self.font,int(min(self.w,self.h)/2)),\
                            fill=self.savcolor,tag=self.tag)
 
     # Return if the point x, y hit this button
@@ -112,7 +112,7 @@ class city():
         self.words.append(word)
     
     def draw(self,canvas):
-        rank = len(self.words) / 20
+        rank = int(len(self.words) / 20)
         if rank >= len(cityImages): rank = len(cityImages)-1
         canvas.create_image(self.shape.x,self.shape.y,anchor=NW,\
                             image=cityImages[rank])
@@ -247,7 +247,7 @@ class fightPair():
         w,h = answerbw, answerbh 
         canvas.create_rectangle(x,y,x+w,y+h,outline="Black",fill="Yellow",\
                                 tag='fight')
-        canvas.create_text(x,y,anchor=NW,text=self.question,font=("Symbol",h/2),\
+        canvas.create_text(x,y,anchor=NW,text=self.question,font=("Symbol",int(h/2)),\
                            tag='fight')
         for b in self.buttons: b.draw(canvas)
 
@@ -271,7 +271,7 @@ cv_battle = Canvas(root,width=winw,height=winh,bg='white')
 ################################################################################
 ###########IMAGES###############################################################
 def getPhotoImage(filename,w,h):
-    return ImageTk.PhotoImage(Image.open(join(IMG_DIR,filename)).resize((w,h)))
+    return ImageTk.PhotoImage(Image.open(join(IMG_DIR,filename)).resize((int(w),int(h))))
 
 cityImages = [getPhotoImage("city%d.gif"%i,\
                             citySize*(i+15)/15,citySize*(i+15)/15)\
@@ -452,7 +452,7 @@ def readDict():
     while True:
         s = fdict.readline()
         if(s == ""): break
-        s = s.encode('ascii','ignore')
+        # s = s.encode('ascii','ignore')
         s = s.strip()
         if(s.isalpha):
             m = fdict.readline()
@@ -912,21 +912,21 @@ def mainfunc():
                                 # Attackers originally distribute in the below
                                 # half of the battle field
                                     s.setpos(randint(0,winw),\
-                                             randint(winh*3/4,winh))
+                                             randint(int(winh*3/4),winh))
                                 for s in defenders:
                                     s.setpos(randint(0,winw),\
-                                             randint(0,winh/4))
+                                             randint(0,int(winh/4)))
                                 if useflag:
-                                    flag = [winw/2,winh/2]
+                                    flag = [int(winw/2),int(winh/2)]
                                 yourTroop = defenders
                                 enemyTroop = attackers
                                 hangon = True
                                 youAreAttacked = True
                                 putMessage("Your are being attacked!")
-                                x0 = c.shape.x+citySize/2
-                                x1 = nb.shape.x+citySize/2
-                                y0 = c.shape.y+citySize/2
-                                y1 = nb.shape.y+citySize/2
+                                x0 = c.shape.x+int(citySize/2)
+                                x1 = nb.shape.x+int(citySize/2)
+                                y0 = c.shape.y+int(citySize/2)
+                                y1 = nb.shape.y+int(citySize/2)
                                 putMark("attack",[x0,y0,x1,y1])
                                 putMark("fire",[x1,y1])
                                 break
@@ -1385,7 +1385,7 @@ def drawmain():
     global citySelect,showControlPanel
     if(currentCanvas != "main"): return
     cv_main.delete(ALL)
-    cv_main.create_image(winw/2,winh/2,image=groundImage)
+    cv_main.create_image(int(winw/2),int(winh/2),image=groundImage)
     for c in cities:
         c.draw(cv_main)
     if(citySelect != None):
@@ -1401,13 +1401,13 @@ def drawmain():
     # Messages
     if not message == "":
         x,y = 0,winh-wbh
-        cv_main.create_rectangle(x,y-wbh/3,winw,winh,outline='black',\
+        cv_main.create_rectangle(x,y-int(wbh/3),winw,winh,outline='black',\
                                  fill='Orange',tag='message')
-        cv_main.create_text(x,y-wbh/3,anchor=NW,font=("Symbol",wbh/2),\
+        cv_main.create_text(x,y-int(wbh/3),anchor=NW,font=("Symbol",int(wbh/2)),\
                             text=message,tag='message')
     for m in messages:
         cv_main.create_text(m.loc[0],m.loc[1],anchor=CENTER,\
-                            font=("Symbol",wbh/2),text=m.text,tag='message',\
+                            font=("Symbol",int(wbh/2)),text=m.text,tag='message',\
                             fill="White")
     # Marks
     for m in marks:
@@ -1418,8 +1418,8 @@ def drawmain():
 
     # City info panel
     if(citySelect):
-        x,y,w,h = 0,0,winw/4,winh/20
-        if(citySelect.shape.x < winw/2): x = winw - w
+        x,y,w,h = 0,0,int(winw/4),int(winh/20)
+        if(citySelect.shape.x < int(winw/2)): x = winw - w
         if(citySelect.c == yourColor):
             relation = "Yourself"
         else:
@@ -1438,7 +1438,7 @@ def drawmain():
         for i in range(len(infos)):
             cv_main.create_rectangle(x,y+i*h,x+w,y+(i+1)*h,outline='black',\
                                      fill='yellow',tag='infoPanel')
-            cv_main.create_text(x,y+i*h,anchor=NW,font=("Symbol",h/2),\
+            cv_main.create_text(x,y+i*h,anchor=NW,font=("Symbol",int(h/2)),\
                                 text=infos[i],tag='infoPanel')
     # Control panel
     if showControlPanel:
@@ -1453,10 +1453,10 @@ def drawmain():
                     blockMovedOver = w
             # If moved over by mouse, show the Chinese meaning
             if blockMovedOver is not None:
-                bx,by = 0,winh-wbh-wbh/3
+                bx,by = 0,winh-wbh-int(wbh/3)
                 cv_main.create_rectangle(bx,by,winw,winh,outline='black',\
                                          fill='Orange',tag='control')
-                cv_main.create_text(bx,by,anchor=NW,font=("Symbol",wbh/2),\
+                cv_main.create_text(bx,by,anchor=NW,font=("Symbol",int(wbh/2)),\
                                     text=wordDict[blockMovedOver.word],\
                                     tag='control')
 
@@ -1465,9 +1465,9 @@ def drawmain():
     if showRecruitPanel:
         cv_main.create_rectangle(rpx,rpy,rpx+rpw,rpy+rph*2,outline='black',\
                                  fill='Orange',tag='recruit')
-        cv_main.create_text(rpx,rpy,anchor=NW,font=("Symbol",rph/2),\
+        cv_main.create_text(rpx,rpy,anchor=NW,font=("Symbol",int(rph/2)),\
                             text=wordDict[recruitWord],tag='recruit')
-        cv_main.create_text(rpx,rpy+rph,anchor=NW,font=("Symbol",rph/2),\
+        cv_main.create_text(rpx,rpy+rph,anchor=NW,font=("Symbol",int(rph/2)),\
                             text=recruitAnswer,tag='recruit')
     
     # Information
@@ -1486,14 +1486,14 @@ def drawmain():
             if ctdata[i][2] < ctdata[j][2]:
                 ctdata[i],ctdata[j] = ctdata[j],ctdata[i]
     for i in range(0,len(ctdata)):
-        cv_main.create_text(0,winh/16*i,anchor=NW,text=ctdata[i][0]+": ",\
-            fill=ctdata[i][0],font=("Symbol",winh/32))
-        cv_main.create_text(bw/3,winh/16*i,anchor=NW,text=\
+        cv_main.create_text(0,int(winh/16*i),anchor=NW,text=ctdata[i][0]+": ",\
+            fill=ctdata[i][0],font=("Symbol",int(winh/32)))
+        cv_main.create_text(int(bw/3),int(winh/16*i),anchor=NW,text=\
             str(ctdata[i][2])+" "+str(ctdata[i][1]),\
-            fill="white",font=("Symbol",winh/32))
+            fill="white",font=("Symbol",int(winh/32)))
     cv_main.create_text(winw-bw,winh-bh,anchor=NW,\
                 text="unrecruited: %d"%len(deadWords),\
-                fill="white",font=("Symbol",bh/4))
+                fill="white",font=("Symbol",int(bh/4)))
     
     # Menu
     if showMainMenu:
@@ -1503,7 +1503,7 @@ def drawmain():
 def drawdoc():
     if currentCanvas != "document": return
     cv_document.delete(ALL)
-    cv_document.create_image(winw/2,winh/2,image=groundImage)
+    cv_document.create_image(int(winw/2),int(winh/2),image=groundImage)
     for b in documentbuttons:
         b.draw(cv_document)
     if documentMode == "save":
@@ -1512,14 +1512,14 @@ def drawdoc():
         #cv_document.create_rectangle(0,winh-bh/2,winw,winh,outline="Black",\
         #                            fill="Yellow")
         cv_document.create_text(0,winh-bh,anchor=NW,text=saveName,\
-                                font=("Symbol",bh/2))
+                                font=("Symbol",int(bh/2)))
         savebutton.draw(cv_document)
         
 def drawbattle():
     if currentCanvas != "battle": return
     cv_battle.delete(ALL)
 
-    cv_battle.create_image(winw/2,winh/2,image=groundImage)
+    cv_battle.create_image(int(winw/2),int(winh/2),image=groundImage)
 
     for s in tmpDeadWords:
         s.draw(cv_battle)
@@ -1546,7 +1546,7 @@ def drawbattle():
         x,y = 0,winh-wbh
         cv_battle.create_rectangle(x,y,winw,winh,outline='black',\
                                  fill='Orange',tag='message')
-        cv_battle.create_text(x,y,anchor=NW,font=("Symbol",wbh/2),\
+        cv_battle.create_text(x,y,anchor=NW,font=("Symbol",int(wbh/2)),\
                             text=message,tag='message')
     battlemoveon()
     cv_battle.after(int(interval*1000),drawbattle)
@@ -1561,12 +1561,12 @@ cv_menu.pack()
 cv_menu.bind('<Button-1>',menuLeftClick)
 cv_document.bind('<Motion>',documentMouseMove)
 cv_document.bind('<Button-1>',documentLeftClick)
-cv_document.bind('<Button-3>',documentRightClick)
+cv_document.bind('<Button-2>',documentRightClick)
 cv_selectCity.bind('<Button-1>',selectLeftClick)
-cv_selectCity.bind('<Button-3>',selectRightClick)
+cv_selectCity.bind('<Button-2>',selectRightClick)
 cv_selectCity.bind('<Motion>',selectMouseMove)
 cv_main.bind('<Button-1>',mainLeftClick)
-cv_main.bind('<Button-3>',mainRightClick)
+cv_main.bind('<Button-2>',mainRightClick)
 cv_main.bind('<Motion>',mainMouseMove)
 cv_main.bind('<B1-Motion>',mainMouseLeftMove)
 cv_battle.bind('<Button-1>',battleLeftClick)
